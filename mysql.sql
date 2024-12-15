@@ -22,28 +22,31 @@ CREATE TABLE json_data_table
 
 
 -- Initialize test data
-SET @qty = 100000;
+SET @qty = 10000;
 SET @data = '{"firstName": "John", "lastName": "Doe", "age": 42, "company": "ACME Consulting", "position": "Manager"}';
 
 
 -- Define procedures
 DELIMITER $$
-DROP PROCEDURE IF EXISTS text_data_insert;
-CREATE PROCEDURE text_data_insert(IN qty INT)
+DROP PROCEDURE IF EXISTS data_insert;
+CREATE PROCEDURE data_insert(IN qty INT, IN table_name TEXT)
 BEGIN
     DECLARE current INT DEFAULT 1;
+    SET @sql = CONCAT('INSERT INTO ', table_name, '(data)
+            VALUES
+            (@data),
+            (@data),
+            (@data),
+            (@data),
+            (@data),
+            (@data),
+            (@data),
+            (@data),
+            (@data),
+            (@data);');
+    PREPARE stmt FROM @sql;
     REPEAT
-        INSERT INTO text_data_table(data)
-        VALUES (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data);
+        EXECUTE stmt;
         SET current = current + 1;
     UNTIL current > qty END REPEAT;
 END $$
@@ -51,41 +54,18 @@ DELIMITER ;
 
 -- Populate text_data_table
 SET @text_start = UNIX_TIMESTAMP();
-CALL text_data_insert(@qty);
+CALL data_insert(@qty, 'text_data_table');
 SET @text_end = UNIX_TIMESTAMP();
 SET @text_time = @text_end - @text_start;
 
-
-DELIMITER $$
-DROP PROCEDURE IF EXISTS json_data_insert;
-CREATE PROCEDURE json_data_insert(IN qty INT)
-BEGIN
-    DECLARE counter INT DEFAULT 1;
-    REPEAT
-        INSERT INTO json_data_table(data)
-        VALUES (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data),
-               (@data);
-        SET counter = counter + 1;
-    UNTIL counter > qty END REPEAT;
-END $$
-DELIMITER ;
-
 -- Populate json_data_table
 SET @json_start = UNIX_TIMESTAMP();
-CALL json_data_insert(@qty);
+CALL data_insert(@qty, 'json_data_table');
 SET @json_end = UNIX_TIMESTAMP();
 SET @json_time = @json_end - @json_start;
 
 
--- Get results
+-- Calculate results
 SELECT table_name AS `Table`, ROUND(data_length / 1024 / 1024) AS `Size in MB`, data_length AS `Size in bytes`,
        CASE WHEN table_name = 'json_data_table' THEN @json_time
             WHEN table_name = 'text_data_table' THEN @text_time END AS `Time in sec`
