@@ -90,4 +90,5 @@ SELECT table_name AS `Table`, ROUND(data_length / 1024 / 1024) AS `Size in MB`, 
        CASE WHEN table_name = 'json_data_table' THEN @json_time
             WHEN table_name = 'text_data_table' THEN @text_time END AS `Time in sec`
   FROM information_schema.tables
- WHERE table_schema = 'json_vs_text';
+ WHERE table_schema = 'json_vs_text'
+ ORDER BY table_name;
