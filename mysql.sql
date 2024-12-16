@@ -29,7 +29,7 @@ SET @data = '{"firstName": "John", "lastName": "Doe", "age": 42, "company": "ACM
 -- Define procedures
 DELIMITER $$
 DROP PROCEDURE IF EXISTS data_insert;
-CREATE PROCEDURE data_insert(IN qty INT, IN table_name TEXT)
+CREATE PROCEDURE data_insert(IN qty INT, IN table_name VARCHAR(30))
 BEGIN
     DECLARE current INT DEFAULT 1;
     SET @sql = CONCAT('INSERT INTO ', table_name, '(data)
