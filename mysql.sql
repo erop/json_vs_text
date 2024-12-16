@@ -22,7 +22,7 @@ CREATE TABLE json_data_table
 
 
 -- Initialize test data
-SET @qty = 100000;
+SET @qty = 10000;
 SET @data = '{"firstName": "John", "lastName": "Doe", "age": 42, "company": "ACME Consulting", "position": "Manager"}';
 
 
