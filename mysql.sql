@@ -1,5 +1,3 @@
-SELECT VERSION();
-
 -- Create test database and tables
 DROP DATABASE IF EXISTS json_vs_text;
 CREATE DATABASE json_vs_text;
