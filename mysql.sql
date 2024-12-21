@@ -20,13 +20,13 @@ CREATE TABLE json_data_table
 
 
 -- Initialize test data
-SET @qty = 10000;
+SET @qty = 100000;
 SET @data = '{"firstName": "John", "lastName": "Doe", "age": 42, "company": "ACME Consulting", "position": "Manager"}';
 
 
--- Define procedures
-DELIMITER $$
+-- Define procedure for text_data_table
 DROP PROCEDURE IF EXISTS text_data_insert;
+DELIMITER $$
 CREATE PROCEDURE text_data_insert(IN qty INT)
 BEGIN
     DECLARE current INT DEFAULT 1;
@@ -54,8 +54,9 @@ SET @text_end = UNIX_TIMESTAMP();
 SET @text_time = @text_end - @text_start;
 
 
-DELIMITER $$
+-- Define procedure for json_data_table
 DROP PROCEDURE IF EXISTS json_data_insert;
+DELIMITER $$
 CREATE PROCEDURE json_data_insert(IN qty INT)
 BEGIN
     DECLARE counter INT DEFAULT 1;
@@ -83,7 +84,7 @@ SET @json_end = UNIX_TIMESTAMP();
 SET @json_time = @json_end - @json_start;
 
 
--- Get results
+-- Show results
 SELECT table_name AS `Table`, ROUND(data_length / 1024 / 1024) AS `Size in MB`, data_length AS `Size in bytes`,
        CASE WHEN table_name = 'json_data_table' THEN @json_time
             WHEN table_name = 'text_data_table' THEN @text_time END AS `Time in sec`
